@@ -1,0 +1,15 @@
+# версия docker-compose
+version: '3.7'
+
+# имена и описания контейнеров, которые должны быть развёрнуты
+services:
+  krishabot:
+    image: krishabot_image
+    container_name: krishabot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./.env
+
