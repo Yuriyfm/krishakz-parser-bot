@@ -3,6 +3,7 @@ import requests
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 import time
 from telegramBot import bot
 
@@ -13,17 +14,23 @@ DATA = []
 CHAT_ID = os.getenv("CHAT_ID")
 bot_token = os.getenv("TELEGRAM_TOKEN")
 
-# функция для получения html
+
+def print_time():
+    date_time = datetime.fromtimestamp(time.time())
+    str_date_time = date_time.strftime("%d-%m-%Y, %H:%M:%S")
+    print("Бот работает", str_date_time)
+
+
+print_time()
+
+
 def get_html(url):
     r = requests.get(url)
     return r.text
 
 
-# функция подсчета количества страниц
-# используем библиотеку BeautifulSoup для поиска html тегов на странице
-#
 def get_total_pages(html):
-    soup = BeautifulSoup(html, 'lxml')  # определяем объект soup
+    soup = BeautifulSoup(html, 'lxml')
     try:
         divs = soup.find('nav',
                          class_='paginator')  # находим на странице первый объект nav с именем класса paginator-public
@@ -81,23 +88,27 @@ def get_page_data(html):
 
         if len(DATA) == 0:
             DATA.append(post)
-        if is_new(post):
-            bot.send_message(int(CHAT_ID), f'Цена: {post["price"]}\nАдрес: {post["address"]}\nПлощадь: '
-                                           f'{post["square"]}\n Ссылка: {post["url"]}')
-            time.sleep(5)
 
-# основная функция
-# базовый url для Астаны имеет вид https://krisha.kz/prodazha/kvartiry/astana/
-# к нему добавляется запрос query_part и еще дальше идет блок со страницами page_part
-#
+        if is_new(post):
+            print(post)
+            try:
+                bot.send_message(int(CHAT_ID), f'Цена: {post["price"]}\nАдрес: {post["address"]}\nПлощадь: '
+                                               f'{post["square"]}\n Ссылка: {post["url"]}')
+            except Exception as e:
+                print(e)
+            time.sleep(3)
+
+
 def main():
-    url = 'https://krisha.kz/arenda/kvartiry/almaty/?das[live.furniture]=1&das[live.rooms]=1&das[live.square][from]=30&das[price][from]=100000&das[price][to]=180000&das[rent.period]=2&areas=p43.196219,76.783591,43.240662,76.784278,43.255219,76.794578,43.273033,76.816894,43.279304,76.837493,43.285825,76.885215,43.293851,76.926414,43.296860,76.951133,43.296860,76.976539,43.285575,76.981002,43.262746,76.981002,43.240411,76.980315,43.234387,76.974822,43.215055,76.891051,43.198982,76.855002,43.198480,76.782218,43.196219,76.783591&zoom=12&lat=43.23978&lon=76.87442'
+    url = 'https://krisha.kz/arenda/kvartiry/almaty/?bounds=&das[live.furniture]=1&das[live.rooms]=1&das[live.square][from]=30&das[price][from]=100000&das[price][to]=180000&das[rent.period]=2&areas=p43.197977,76.796294,43.229366,76.775008,43.255972,76.788055,43.280558,76.798698,43.304949,76.815352,43.317920,76.884185,43.314161,76.918175,43.310901,76.952850,43.296860,76.976539,43.285575,76.981002,43.265506,76.987525,43.245431,76.988898,43.220579,76.981688,43.190944,76.906844,43.190442,76.880580,43.191195,76.865388,43.190567,76.854358,43.189939,76.840926,43.189437,76.810370,43.197977,76.796294&zoom=12&lat=43.23789&lon=76.86172'
     page_part = '&page='
 
     while True:
+        start_time = time.time()
+        if time.time() - start_time % 600:
+            print_time()
         try:
             total_pages = get_total_pages(get_html(url))
-            #
             for i in range(1, total_pages):
                 if i == 1:
                     url_gen = url
@@ -105,7 +116,7 @@ def main():
                     url_gen = url + page_part + str(i)
                 html = get_html(url_gen)
                 get_page_data(html)
-            time.sleep(120)
+            time.sleep(10)
         except Exception as e:
             print(e)
             exit()
