@@ -11,9 +11,3 @@ bot_token = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 bot = telebot.TeleBot(bot_token)
 
-
-@bot.message_handler(commands=['start'])
-def start_message(message):
-  bot.send_message(int(CHAT_ID), "Привет! ")
-
-bot.polling()
