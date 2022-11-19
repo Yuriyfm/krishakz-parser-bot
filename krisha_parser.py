@@ -119,6 +119,7 @@ def main():
             time.sleep(10)
         except Exception as e:
             print(e)
+            bot.send_message(int(CHAT_ID), f'Бот упал с ошибкой:\n{e}')
             exit()
 # блок main
 if __name__ == '__main__':
