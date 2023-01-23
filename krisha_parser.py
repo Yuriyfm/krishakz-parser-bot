@@ -33,9 +33,9 @@ def get_total_pages(html):
     soup = BeautifulSoup(html, 'lxml')
     try:
         divs = soup.find('nav',
-                         class_='paginator')  # находим на странице первый объект nav с именем класса paginator-public
-        pages = len(divs.find_all('a', class_='paginator__btn')) # находим на странице все теги "a" с именем класса paginator-page-btn, из них выбираем элемент с индексом [-2] это будет последняя страница
-        return int(pages)  # возвращаем полученное значение
+                         class_='paginator') 
+        pages = len(divs.find_all('a', class_='paginator__btn')) 
+        return int(pages) 
     except:
         return 2
 
@@ -48,16 +48,13 @@ def is_new(post):
     return True
 
 
-# функция получения данных с сайта, используем библиотеку BeautifulSoup, она позволяет выполнять поиск по html тегам
+# функция-парсер html
 def get_page_data(html):
     global DATA
-    soup = BeautifulSoup(html, 'lxml')  # определяем объект soup
-    divs = soup.find('section', class_='a-list')  # находим тег section с именем класса a-list
-    ads = divs.find_all('div', class_='a-card__inc')  # в найденном объекте ищем все div с классом a-card__inc
-    # запускаем цикл по всем найденным полям, которые нас интересуют
-    # т.к. ссылка состоит 3-комнатная квартира, 79.4 м², 5/5 эт. я решил ее разделить на поля квартира, площадь, этаж
-    # далее выбираем цену, адрес и описание
-    #
+    soup = BeautifulSoup(html, 'lxml')  
+    divs = soup.find('section', class_='a-list')
+    ads = divs.find_all('div', class_='a-card__inc')
+
     for ad in ads:
         try:
             div = ad.find('a', class_='a-card__title').text
