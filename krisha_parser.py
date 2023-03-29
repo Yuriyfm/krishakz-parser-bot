@@ -13,6 +13,7 @@ load_dotenv(dotenv_path=env_path)
 DATA = []
 CHAT_ID = os.getenv("CHAT_ID")
 bot_token = os.getenv("TELEGRAM_TOKEN")
+URL = os.getenv("URL")
 
 
 def print_time():
@@ -97,7 +98,7 @@ def get_page_data(html):
 
 
 def main():
-    url = 'https://krisha.kz/arenda/kvartiry/almaty/?das[_sys.hasphoto]=1&das[floor_not_first]=1&das[live.furniture]=1&das[live.rooms]=1&das[live.square][from]=33&das[price][from]=140000&das[price][to]=200000&das[who]=1&areas=p43.279932,76.964170,43.280560,76.963483,43.276546,76.923657,43.270024,76.910955,43.254467,76.906491,43.237652,76.825810,43.233887,76.819974,43.222338,76.818944,43.203505,76.833020,43.201244,76.855680,43.219576,76.885549,43.234891,76.962453,43.242170,76.974469,43.255220,76.979276,43.280560,76.963826,43.279932,76.964170&zoom=13&lat=43.22758&lon=76.87427'
+    url = URL
     page_part = '&page='
 
     while True:
